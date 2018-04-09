@@ -5,9 +5,9 @@ import BookControl from './BookControl';
 class Book extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
-    authors : PropTypes.arrayOf(PropTypes.string).isRequired,
-    shelf : PropTypes.string.isRequired,
-    imageURL: PropTypes.string.isRequired,
+    authors : PropTypes.arrayOf(PropTypes.string),
+    shelf : PropTypes.string,
+    imageLinks: PropTypes.object,
     onShelfChanged: PropTypes.func.isRequired
   }
 
@@ -17,19 +17,29 @@ class Book extends Component {
   }
 
   componentDidMount() {
-    const imageURL = this.props.imageURL;
+    const imageLinks = this.props.imageLinks;
+    if (!imageLinks) return;
 
     const image = new Image();
-    image.src = imageURL;
+    image.src = imageLinks.smallThumbnail;
     image.onload = () => {
       this.setState({width: image.width, height:image.height});
     }
   }
 
   render() {
-    const { title, authors, shelf, imageURL, onShelfChanged } = this.props;
+    const { title, imageLinks, onShelfChanged } = this.props;
+    let { authors, shelf } = this.props;
     const width = this.state.width;
     const height = this.state.height;
+
+    if (!authors) {
+      authors = [];
+    }
+    if (!shelf) {
+      shelf = 'none';
+    }
+    const imageURL = (imageLinks) ? imageLinks.smallThumbnail : '';
 
     return (
       <div className="book">
