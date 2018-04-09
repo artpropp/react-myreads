@@ -16,8 +16,6 @@ class BookSearch extends Component {
   }
 
   updateQuery = (query) => {
-    query = query.trim();
-
     // make a quick update to the input
     this.setState((prevState) => {
       prevState.query = query;
@@ -26,7 +24,7 @@ class BookSearch extends Component {
 
     // then also fire a bit expensive search
     // on the backend server and update the books list
-    BooksAPI.search(query).then((books) => {
+    BooksAPI.search(query.trim()).then((books) => {
       this.setState((prevState) => {
         if (!books || books.error) {
           prevState.books = [];
