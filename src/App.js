@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Route } from 'react-router-dom';
 import './App.css';
 import * as BooksAPI from './BooksAPI';
 import BookList from './BookList';
@@ -7,6 +8,7 @@ class App extends Component {
   state = {
     books: []
   }
+
   componentDidMount() {
     document.title = 'MyReads'
 
@@ -25,6 +27,7 @@ class App extends Component {
         }
       });
     });
+    BooksAPI.update(book, book.shelf);
   }
 
   render() {
@@ -32,10 +35,15 @@ class App extends Component {
 
     return (
       <div>
-        <BookList
-          books={books}
-          onBookChanged={this.updateBook}
-        />
+        <Route exact path="/" render={() => (
+          <BookList
+            books={books}
+            onBookChanged={this.updateBook}
+          />
+        )} />
+        <Route path="/search" render={({ history }) => (
+          <p>seaching...</p>
+        )} />
       </div>
     );
   }
