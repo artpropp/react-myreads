@@ -16,15 +16,29 @@ class Book extends Component {
     height: 0
   }
 
+  imageDidLoad = () => {
+    if (this.image) {
+      return;
+    }
+    this.setState({width: this.image.width, height: this.image.height});
+  }
+
   componentDidMount() {
     const imageLinks = this.props.imageLinks;
     if (!imageLinks) return;
 
-    const image = new Image();
-    image.src = imageLinks.smallThumbnail;
-    image.onload = () => {
-      this.setState({width: image.width, height:image.height});
+    this.image = new Image();
+    this.image.src = imageLinks.smallThumbnail;
+    this.image.onload = this.imageDidLoad;
+  }
+
+  componentWillUnmount() {
+    if (!this.image) {
+      return;
     }
+
+    this.imageDidLoad = () => {};
+    delete this.image;
   }
 
   render() {
