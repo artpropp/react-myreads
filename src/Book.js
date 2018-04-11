@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import BookControl from './BookControl';
+import CoverFallBack from './images/cover.svg'
 
 class Book extends Component {
   static propTypes = {
@@ -17,7 +18,7 @@ class Book extends Component {
   }
 
   imageDidLoad = () => {
-    if (this.image) {
+    if (!this.image) {
       return;
     }
     this.setState({width: this.image.width, height: this.image.height});
@@ -25,10 +26,9 @@ class Book extends Component {
 
   componentDidMount() {
     const imageLinks = this.props.imageLinks;
-    if (!imageLinks) return;
 
     this.image = new Image();
-    this.image.src = imageLinks.smallThumbnail;
+    this.image.src = (imageLinks) ? imageLinks.smallThumbnail : CoverFallBack;
     this.image.onload = this.imageDidLoad;
   }
 
@@ -44,16 +44,15 @@ class Book extends Component {
   render() {
     const { title, imageLinks, onShelfChanged } = this.props;
     let { authors, shelf } = this.props;
+
     const width = this.state.width;
     const height = this.state.height;
 
-    if (!authors) {
-      authors = [];
-    }
-    if (!shelf) {
-      shelf = 'none';
-    }
-    const imageURL = (imageLinks) ? imageLinks.smallThumbnail : '';
+    const imageURL = (imageLinks) ? imageLinks.smallThumbnail : CoverFallBack;
+
+    // make sure we don't try to render some undefined
+    authors = (authors) ? authors : [];
+    shelf = (shelf) ? shelf : 'none';
 
     return (
       <div className="book">
